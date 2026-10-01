@@ -417,11 +417,10 @@ footer{padding:120px 0 64px;font-size:14px;color:var(--content-secondary)}
 </section>
 
 <section id="code">
-  <div class="sec-head"><h2>Code</h2><p>Drop the CSS into the global stylesheet and the TypeScript next to your Motion components. Call applyPlatformAttribute() once at boot so the forked tokens resolve.</p></div>
+  <div class="sec-head"><h2>Code</h2></div>
   <div class="code"><div class="code-head"><span>motion-tokens.css</span><button class="copy-btn" data-copy-target="code-css">COPYICON<span>Copy</span></button></div><pre><code id="code-css">/* Motion tokens v1 — mobile-first React (web).
    Durations on a 100 ms grid (subset of Material 3 short2…long2).
-   Springs use Apple's duration + bounce model (WWDC23 "Animate with springs"),
-   pre-sampled to CSS linear(); the CSS duration is the visual settle time. */
+   Springs use Apple's duration + bounce model, pre-sampled to CSS linear(); the CSS duration is the visual settle time. */
 
 :root {
   /* Duration — size sets the step, exits take the next shorter step */
