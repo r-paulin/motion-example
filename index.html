@@ -28,7 +28,7 @@
   --bg-neutral-secondary:rgba(0,45,30,.07);
   --border-neutral-secondary:rgba(0,20,13,.16);
   --border-separator:rgba(0,45,30,.07);
-  --content-danger:#d23b31; /* not in this file's imported variables, check the library */
+  --content-danger:rgba(173,0,14,.94); /* Clay content/danger-primary */
   --cashback-coin:#f29b0a; /* coin colour from the cashback screen, not a library token */
   --dimension-300:12px;
   --letter-spacing-2100:-1.06px;
@@ -422,7 +422,7 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
 <header>
   <img class="logo" src="bolt-money-logo.svg" width="167" height="33" alt="Bolt Money">
   <h1>Motion tokens</h1>
-  <p class="intro">One shared set of motion tokens for iOS and Android. Page navigation, sheets, dialogs and full-screen modals differ by platform, because that’s where iOS and Android users expect different movement. Bounce is only used for a confirmed success, never when money leaves. Press uses scale-sm on both platforms.</p>
+  <p class="intro">One shared set of motion tokens for iOS and Android. Page navigation, sheets, dialogs and full-screen modals differ by platform, because that’s where iOS and Android users expect different movement. Bounce is only used for a confirmed success, never when money leaves. Press uses scale-sm on both platforms: a deliberate Bolt choice, because natively iOS dims and Android ripples, and one press keeps the webview consistent.</p>
   <p class="intro" style="margin-top:16px">These tokens are part of the Clay design system. In text, they’re written without the --motion- prefix, and sizes always refer to Clay dimension tokens, for example dimension-100.</p>
   <div class="controls">
     <button class="rm-switch" id="rm" type="button" role="switch" aria-checked="false"><span class="tg" aria-hidden="true"><b></b></span><span>Preview Reduce Motion</span></button>
@@ -460,17 +460,27 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
 </section>
 
 <section id="easing">
-  <div class="sec-head"><h2>Easing</h2><p>Things arriving slow down, things leaving speed up, and things moving on screen use ease-standard. ease-ios is only used inside the iOS platform tokens.</p></div>
+  <div class="sec-head"><h2>Easing</h2><p>Things arriving slow down, things leaving speed up, and things moving on screen use ease-standard. ease-standard is also the default curve for anything without a more specific rule. ease-ios is only used inside the iOS platform tokens.</p></div>
   <div class="rows" id="rows-easing"></div>
 </section>
 
 <section id="springs">
-  <div class="sec-head"><h2>Springs</h2><p>Each spring is defined by a duration and a bounce. In CSS they’re sampled into linear(), and the CSS duration is how long the spring takes to settle.</p></div>
+  <div class="sec-head"><h2>Springs</h2><p>Each spring is defined by a duration and a bounce. In CSS they’re sampled into linear(), and the CSS duration is how long the spring takes to settle. Exits use spring-snappy, the shorter spring.</p></div>
   <div class="rows" id="rows-springs"></div>
 </section>
 
+<section id="supporting">
+  <div class="sec-head"><h2>Distance, scale and fade</h2><p>Shared values that combine with durations and curves. Distances use Clay dimension tokens, so motion adds no new sizes. Shared values are named by size (sm, md, lg); platform tokens are named by surface (nav, sheet, dialog, modal). Two shared tokens have no example here: --motion-scrim uses the Clay special/scrim colour, and --motion-spinner-delay (duration-sm) is how long to wait before showing a spinner.</p></div>
+  <div class="rows" id="rows-supporting"></div>
+</section>
+
+<section id="guardrails">
+  <div class="sec-head"><h2>Guardrails</h2><p>These apply to every animation. If two conflict, the lower number wins.</p></div>
+  <div class="notes guard" id="notes-guardrails"></div>
+</section>
+
 <section id="platform">
-  <div class="sec-head"><h2>Platform-forked tokens</h2><p>These are the only tokens that differ by platform. Android values are the default, and data-platform="ios" on the root element switches to iOS. Each one sets travel, scale, scrim and easing, not just duration. Switch platforms in the phone to compare, and drag the sheet: iOS stretches a little, Android follows the finger exactly.</p></div>
+  <div class="sec-head"><h2>Platform-forked tokens</h2><p>These are the only tokens that differ by platform. Android values are the default, and data-platform="ios" on the root element switches to iOS. Each one sets travel, scale and easing, not just duration. Every scrim uses the Clay special/scrim colour. Switch platforms in the phone to compare, and drag the sheet: iOS stretches a little, Android follows the finger exactly.</p></div>
   <article class="row">
     <hr class="divider">
     <div class="row-head"><h3>Pages and sheets</h3></div>
@@ -479,9 +489,9 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
         <ul class="fork-list">
           <li><div class="tok-name"><b>--motion-nav-enter</b><button class="copy-ic" data-copy="--motion-nav-enter-duration" aria-label="Copy --motion-nav-enter-duration">COPYICON</button></div><span>iOS: duration-xl with ease-ios. The new page slides in from the side and the old page moves back by nav-parallax (30%). Android: duration-lg with ease-standard. Both pages shift by distance-lg while they cross-fade, over the same duration.</span></li>
           <li><div class="tok-name"><b>--motion-nav-exit</b><button class="copy-ic" data-copy="--motion-nav-exit-duration" aria-label="Copy --motion-nav-exit-duration">COPYICON</button></div><span>iOS: duration-lg with ease-ios. Android: duration-md with ease-standard. If the page is still moving, reverse from where it is and use only the time needed for the distance left.</span></li>
-          <li><div class="tok-name"><b>--motion-sheet-enter / --motion-sheet-exit</b><button class="copy-ic" data-copy="--motion-sheet-enter-duration" aria-label="Copy --motion-sheet-enter-duration">COPYICON</button></div><span>Sheets rise from the bottom on both platforms. iOS: duration-xl in and duration-lg out, with ease-ios. The page behind scales to 0.93, the scrim is 0.25, and the sheet stretches a little when dragged. Android: duration-lg with ease-enter in and duration-md with ease-exit out. The page behind stays the same size, the scrim is 0.32, and the sheet follows the finger exactly. On release, both settle with spring-smooth at the finger’s speed.</span></li>
-          <li><div class="tok-name"><b>--motion-dialog-enter / --motion-dialog-exit</b><button class="copy-ic" data-copy="--motion-dialog-enter-duration" aria-label="Copy --motion-dialog-enter-duration">COPYICON</button></div><span>A centred alert that fades and scales without sliding. iOS: starts at 0.97, duration-sm in and duration-xs out, with ease-ios. Android: starts at 0.92, duration-md with ease-enter in and duration-sm with ease-exit out. On both, the fade and the scrim use spring-smooth in and spring-snappy out, so the dim and the dialog move together. A dialog over a sheet leaves the sheet still and uses one scrim.</span></li>
-          <li><div class="tok-name"><b>--motion-modal-enter / --motion-modal-exit</b><button class="copy-ic" data-copy="--motion-modal-enter-duration" aria-label="Copy --motion-modal-enter-duration">COPYICON</button></div><span>A full-screen task, not a step deeper into the app. iOS: covers the screen from the bottom, duration-xl in and duration-lg out, with ease-ios. Nothing moves or scales behind it. Android: scales up from 0.92 over a scrim, duration-lg with ease-enter in and duration-md with ease-exit out. The fade and the scrim use spring-smooth in and spring-snappy out, like the dialog.</span></li>
+          <li><div class="tok-name"><b>--motion-sheet-enter / --motion-sheet-exit</b><button class="copy-ic" data-copy="--motion-sheet-enter-duration" aria-label="Copy --motion-sheet-enter-duration">COPYICON</button></div><span>Sheets rise from the bottom on both platforms. iOS: duration-xl in and duration-lg out, with ease-ios. The page behind scales to 0.93 and the sheet stretches a little when dragged. Android: duration-lg with ease-enter in and duration-md with ease-exit out. The page behind stays the same size and the sheet follows the finger exactly. Both use the Clay special/scrim colour and, on release, settle with spring-smooth at the finger’s speed.</span></li>
+          <li><div class="tok-name"><b>--motion-dialog-enter / --motion-dialog-exit</b><button class="copy-ic" data-copy="--motion-dialog-enter-duration" aria-label="Copy --motion-dialog-enter-duration">COPYICON</button></div><span>A centred alert that fades and scales without sliding. iOS: starts at 0.97, duration-sm in and duration-xs out, with ease-ios. Android: starts at 0.92, duration-md with ease-enter in and duration-sm with ease-exit out. On both, the fade and the scrim use dialog-fade-enter (spring-smooth) and dialog-fade-exit (spring-snappy), so the dim and the dialog move together. A dialog over a sheet leaves the sheet still and uses one scrim.</span></li>
+          <li><div class="tok-name"><b>--motion-modal-enter / --motion-modal-exit</b><button class="copy-ic" data-copy="--motion-modal-enter-duration" aria-label="Copy --motion-modal-enter-duration">COPYICON</button></div><span>A full-screen task, not a step deeper into the app. iOS: covers the screen from the bottom, duration-xl in and duration-lg out, with ease-ios. Nothing moves or scales behind it. Android: scales up from 0.92 over a scrim, duration-lg with ease-enter in and duration-md with ease-exit out. The fade and the scrim use modal-fade-enter (spring-smooth) and modal-fade-exit (spring-snappy), like the dialog.</span></li>
         </ul>
       </div>
       <div class="card tall" style="padding:20px 0">
@@ -498,15 +508,9 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
   </article>
 </section>
 
-<section id="supporting">
-  <div class="sec-head"><h2>Distance and scale</h2><p>Shared values that combine with durations and curves. Distances use Clay dimension tokens, so motion adds no new sizes. Each token is named by size, not by component.</p></div>
-  <div class="rows" id="rows-supporting"></div>
-</section>
 
-<section id="guardrails">
-  <div class="sec-head"><h2>Guardrails</h2><p>These apply to every animation. If two conflict, the lower number wins.</p></div>
-  <div class="notes guard" id="notes-guardrails"></div>
-</section>
+
+
 
 <section id="delight">
   <div class="sec-head"><h2>Delight</h2><p>Delight is for moments with real emotion. Cashback and the success page each get one bounce because something good is confirmed. Payment confirms calmly because money is leaving, and Activity, card lock and wrong PIN show where motion stays quiet.</p></div>
@@ -519,7 +523,7 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
 </section>
 
 <section id="reduce-motion">
-  <div class="sec-head"><h2>Reduce Motion</h2><p>Swap motion, don’t remove it. iOS replaces slides with cross-fades when Reduce Motion is on, and we do the same. Turn on the preview at the top to see every example this way.</p></div>
+  <div class="sec-head"><h2>Reduce Motion</h2><p>Swap motion, don’t remove it. iOS replaces slides with cross-fades when Reduce Motion is on, and we do the same. On Android, check that the Remove animations setting reaches the webview; if it doesn’t, the native app has to pass it in. Turn on the preview at the top to see every example this way.</p></div>
   <div class="scroll" tabindex="0" role="region" aria-label="Reduce Motion table"><table>
     <thead><tr><th>Normal</th><th>With Reduce Motion on</th></tr></thead>
     <tbody>
@@ -558,8 +562,9 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
     scale: { sm: 0.97, lg: 0.5 },
     stagger: 40,
     press: { down: { duration: "xs", ease: "standard", scale: "sm" }, up: { spring: "snappy" } },
-    fade: { in: { duration: "sm", ease: "standard" }, out: { duration: "xs", ease: "standard" } },
-    crossFade: { duration: "sm", ease: "standard" },
+    fade: { in: { spring: "smooth" }, out: { spring: "snappy" } },
+    crossFade: { spring: "smooth" },
+    spinnerDelay: "sm",
     confirm: { spring: "smooth", fromScale: "sm" },
     popIn: { spring: "bouncy", fromScale: "lg" },
     toast: { enter: { duration: "md", ease: "enter", y: "md" }, exit: { duration: "sm", ease: "exit" }, hold: 4000 },
@@ -568,14 +573,14 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
     platform: {
       android: {
         nav: { enter: { duration: "lg", ease: "standard" }, exit: { duration: "md", ease: "standard" }, parallax: "32px" },
-        sheet: { enter: { duration: "lg", ease: "enter" }, exit: { duration: "md", ease: "exit" }, scrim: 0.32, backdropScale: 1, elastic: 0 },
-        dialog: { enter: { duration: "md", ease: "enter" }, exit: { duration: "sm", ease: "exit" }, scale: 0.92, scrim: 0.32 },
-        modal: { enter: { duration: "lg", ease: "enter" }, exit: { duration: "md", ease: "exit" }, scale: 0.92, kind: "fadeScale" }
+        sheet: { enter: { duration: "lg", ease: "enter" }, exit: { duration: "md", ease: "exit" }, scrim: 0.28, backdropScale: 1, elastic: 0 },
+        dialog: { enter: { duration: "md", ease: "enter" }, exit: { duration: "sm", ease: "exit" }, fade: { enter: "smooth", exit: "snappy" }, scale: 0.92, scrim: 0.28 },
+        modal: { enter: { duration: "lg", ease: "enter" }, exit: { duration: "md", ease: "exit" }, fade: { enter: "smooth", exit: "snappy" }, scale: 0.92, kind: "fadeScale" }
       },
       ios: {
         nav: { enter: { duration: "xl", ease: "ios" }, exit: { duration: "lg", ease: "ios" }, parallax: "30%" },
-        sheet: { enter: { duration: "xl", ease: "ios" }, exit: { duration: "lg", ease: "ios" }, scrim: 0.25, backdropScale: 0.93, elastic: 0.12 },
-        dialog: { enter: { duration: "sm", ease: "ios" }, exit: { duration: "xs", ease: "ios" }, scale: 0.97, scrim: 0.25 },
+        sheet: { enter: { duration: "xl", ease: "ios" }, exit: { duration: "lg", ease: "ios" }, scrim: 0.28, backdropScale: 0.93, elastic: 0.12 },
+        dialog: { enter: { duration: "sm", ease: "ios" }, exit: { duration: "xs", ease: "ios" }, fade: { enter: "smooth", exit: "snappy" }, scale: 0.97, scrim: 0.28 },
         modal: { enter: { duration: "xl", ease: "ios" }, exit: { duration: "lg", ease: "ios" }, kind: "cover" }
       }
     },
@@ -718,9 +723,9 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
     ['pointerup','pointerleave','pointercancel'].forEach(function(ev){btn.addEventListener(ev,function(){if(reduced)anim(btn,[{opacity:1}],{duration:D.xs});else anim(btn,[{transform:'scale(1)'}],{duration:S.snappy.ms,easing:sp('snappy')});});});
     btn.addEventListener('click',async function(e){
       e.stopPropagation();if(busy)return;busy=true;
-      /* simulated server reply; the spinner appears only if it takes longer than 150 ms */
+      /* simulated server reply; the spinner appears only if it takes longer than duration-sm */
       var replied=false,reply=wait(900).then(function(){replied=true;});
-      await wait(150);
+      await wait(D[motionSystem.spinnerDelay]);
       if(!replied){
         anim(lab,[{opacity:1},{opacity:0}],{duration:D.xs,easing:E.exit});
         anim(spin,[{opacity:0},{opacity:1}],{duration:D.sm,easing:E.enter});
@@ -851,7 +856,7 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
         el.addEventListener('click',async function(){
           if(busy)return;busy=true;
           var replied=false,reply=wait(900).then(function(){replied=true;});
-          await wait(150);
+          await wait(D[motionSystem.spinnerDelay]);
           anim(lab,[{opacity:1},{opacity:0}],{duration:D.xs,easing:E.exit});
           if(!replied){
             anim(spin,[{opacity:0},{opacity:1}],{duration:D.sm,easing:E.enter});
@@ -924,6 +929,24 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
         lrows.setAttribute('aria-disabled', String(locked));
       }};
     },
+    fadeDemo:function(){
+      /* fade tokens: in with spring-smooth, out with spring-snappy */
+      var el=h('<div class="fade-img" aria-hidden="true"><i></i><i style="width:60%"></i></div>'),shown=true;
+      resetters.push(function(){el.getAnimations().forEach(function(a){a.cancel();});shown=true;});
+      return {el:el,play:function(){
+        shown=!shown;var k=shown?motionSystem.fade.in.spring:motionSystem.fade.out.spring;
+        anim(el,[{opacity:shown?0:1},{opacity:shown?1:0}],reduced?{duration:D.sm,easing:E.standard}:{duration:S[k].ms,easing:sp(k)});
+      }};
+    },
+    crossFadeDemo:function(){
+      /* cross-fade tokens: both on one spring, so the opacities always add up to 1 */
+      var el=h('<div class="xf"><span>€24.90</span><span style="opacity:0">€31.40</span></div>'),a=el.children[0],b=el.children[1],first=true;
+      resetters.push(function(){[a,b].forEach(function(x){x.getAnimations().forEach(function(z){z.cancel();});});first=true;});
+      return {el:el,play:function(){
+        var k=motionSystem.crossFade.spring,out=first?a:b,inn=first?b:a,o=reduced?{duration:D.sm,easing:E.standard}:{duration:S[k].ms,easing:sp(k)};
+        anim(out,[{opacity:1},{opacity:0}],o);anim(inn,[{opacity:0},{opacity:1}],o);first=!first;
+      }};
+    },
     pin:function(){
       var el=h('<div class="pin-wrap"><div class="pin"><span></span><span></span><span></span><span></span></div><div class="pin-msg">Incorrect PIN. Try again.</div></div>');
       var dots=el.querySelector('.pin'),msg=el.querySelector('.pin-msg');
@@ -974,32 +997,34 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
   fill('rows-springs',[
     {token:'--motion-spring-smooth',meta:'duration 0.4 s · bounce 0 · CSS settle 490 ms · Motion { type: "spring", visualDuration: 0.4, bounce: 0 }',desc:'For layout changes, releasing a drag, reordering and calm confirmations. No overshoot, so it suits content.',demo:'lane',o:{ms:490,spring:'smooth',curve:'smooth'}},
     {token:'--motion-spring-snappy',meta:'duration 0.3 s · bounce 0.15 · CSS settle 340 ms · Motion { type: "spring", visualDuration: 0.3, bounce: 0.15 }',desc:'For press release, toggle thumbs, chips and tabs. A tiny overshoot you feel more than see.',demo:'toggle'},
-    {token:'--motion-spring-bouncy',meta:'duration 0.4 s · bounce 0.3 · CSS settle 450 ms · Motion { type: "spring", visualDuration: 0.4, bounce: 0.3 }',desc:'Only for a confirmed success, like cashback arriving or a statement ready. Use it on scale only and keep dimension-100 of space around it, so the overshoot isn’t clipped. One per screen.',demo:'pop'}
+    {token:'--motion-spring-bouncy',meta:'duration 0.4 s · bounce 0.3 · CSS settle 450 ms · Motion { type: "spring", visualDuration: 0.4, bounce: 0.3 }',desc:'Only for an approved success moment: cashback arriving, a reward unlocked, or a statement or document ready. Use it on scale only and keep dimension-100 of space around it, so the overshoot isn’t clipped. One per screen.',demo:'pop'}
   ]);
   fill('rows-supporting',[
-    {token:'--motion-distance-sm',meta:'--dimension-100',desc:'For things that change in place. Status labels don’t move: they cross-fade with duration-sm or change instantly.',demo:'swapToggle'},
+    {token:'--motion-distance-sm',meta:'--dimension-100',desc:'For small nudges in place, like a chevron or icon shifting to show direction or a button arrow on press. Text labels don’t move: they fade out and back in with duration-sm, or change instantly.',demo:'swapToggle'},
     {token:'--motion-distance-md',meta:'--dimension-200',desc:'For things that appear near where they come from, like toasts, undo, tooltips, menus and new list rows. Pair it with duration-md and ease-enter. Toasts stay for 4 seconds.',demo:'toast'},
     {token:'--motion-distance-lg',meta:'--dimension-800',desc:'For moving between pages on Android. The slide and the fade both use nav-enter, and going back reverses from where the page is.',demo:'axis'},
-    {token:'--motion-scale-sm',meta:'0.97 · with duration-xs',desc:'For the pressed state of buttons and tappable cards, and where a calm confirmation starts. Pressing starts on pointer-down and releases with spring-snappy.',demo:'press'},
+    {token:'--motion-scale-sm',meta:'0.97 · with duration-xs',desc:'For the pressed state of buttons and tappable cards on both platforms, and where a calm confirmation starts. Pressing starts on pointer-down and releases with spring-snappy. Using one press instead of the native iOS dim or Android ripple is a deliberate Bolt choice.',demo:'press'},
     {token:'--motion-scale-lg',meta:'0.5 · with spring-bouncy',desc:'Where a pop-in starts after a confirmed success. Use it for scale only, never movement.',demo:'pop'},
-    {token:'--motion-stagger',meta:'40 ms · five items maximum',desc:'The delay between things that start one after another, like list items on first load. After the fifth item, the rest start together. Never use it on scroll or refresh.',demo:'stagger'}
+    {token:'--motion-stagger',meta:'40 ms · five items maximum',desc:'The delay between things that start one after another, like list items on first load. After the fifth item, the rest start together. Never use it on scroll or refresh.',demo:'stagger'},
+    {token:'--motion-fade-in / --motion-fade-out',meta:'spring-smooth in · spring-snappy out',desc:'For things that appear or disappear in place, like a loaded image or helper text. Fades start softly and finish evenly, like iOS fades, and the exit uses the shorter spring.',demo:'fadeDemo'},
+    {token:'--motion-cross-fade',meta:'spring-smooth for both',desc:'For new content replacing old in the same spot, like tab content or an updated balance. Both run on one spring, so there’s never an empty moment or a double image.',demo:'crossFadeDemo'}
   ]);
   fill('rows-delight',[
-    {token:'Payment sent',meta:'press (scale-sm) → linear spinner if still pending after 150 ms → calm confirm: check settles from scale-sm with spring-smooth and stays',desc:'Money is leaving, so the confirmation stays calm and doesn’t bounce. The check appears only after the server confirms, and the button stays confirmed instead of going back to Send.',demo:'pay'},
+    {token:'Payment sent',meta:'press (scale-sm) → linear spinner if still pending after spinner-delay (duration-sm) → calm confirm: check settles from scale-sm with spring-smooth and stays',desc:'Money is leaving, so the confirmation stays calm and doesn’t bounce. The check appears only after the server confirms, and the button stays confirmed instead of going back to Send.',demo:'pay'},
     {token:'Full-screen success page',meta:'page: nav-enter (iOS slide, Android shared axis) · illustration: pop in from scale-lg with spring-bouncy after the page lands',desc:'Content waits for the page. Switch between iOS and Android to compare the page transition. Once the page lands, the illustration pops in. Title, text and button arrive with the page and stay still.',demo:'successPage',tall:true},
     {token:'Cashback received',meta:'page: nav-enter (iOS slide, Android shared axis) · coin: pop in from scale-lg with spring-bouncy after the page lands',desc:'Money arriving is the moment to celebrate. Switch between iOS and Android to compare the page transition. Once the page lands, the coin pops in. The amount is readable as soon as the page arrives.',demo:'cashback',tall:true},
     {token:'New item in Activity',meta:'rows below: duration-md with ease-standard · new row: distance-md, duration-md, ease-enter · tint: fades out with duration-md',desc:'Payouts arrive many times a day, so there’s no bounce. Only animate the new row when it’s on screen. The list makes room and a short tint helps people spot it.',demo:'activity',tall:true,btn:'Add payout'},
-    {token:'Card locked (no delight)',meta:'toggle: spring-snappy · label: duration-sm cross-fade · lock icon and card dim: duration-sm with ease-standard',desc:'Locking a card is a protective action, so it should feel calm and certain. The toggle moves, the lock fades in, the options below dim, and those rows become disabled in the same frame.',demo:'lock',tall:true},
+    {token:'Card locked (no delight)',meta:'toggle: spring-snappy · label: fades out and back in with duration-sm · lock icon and card dim: duration-sm with ease-standard',desc:'Locking a card is a protective action, so it should feel calm and certain. The toggle moves, the lock fades in, the options below dim, and those rows become disabled in the same frame.',demo:'lock',tall:true},
     {token:'Wrong PIN (no delight)',meta:'shake: duration-md, starts at distance-md and fades out · colour and message: duration-sm',desc:'The short shake is the iOS passcode pattern, used on both platforms. Errors never bounce. The message stays until someone types again, and with Reduce Motion on, the colour and message carry the meaning.',demo:'pin'}
   ]);
 
   /* ── Patterns, guardrails and edge cases ── */
   function notes(id,list,numbered){var host=document.getElementById(id);list.forEach(function(n,i){host.appendChild(h('<div class="note"><h3>'+(numbered?(i+1)+'. ':'')+n[0]+'</h3><p>'+n[1]+'</p></div>'));});}
   notes('notes-guardrails',[
-    ['Navigation, sheets, dialogs and full-screen modals differ by platform','Pages use nav-enter and nav-exit. Sheets, dialogs and full-screen modals each have an iOS and an Android version. Everything else is the same on both, including the press with scale-sm and the wrong PIN shake.'],
+    ['Navigation, sheets, dialogs and full-screen modals differ by platform','Pages use nav-enter and nav-exit. Sheets, dialogs and full-screen modals each have an iOS and an Android version. Everything else is the same on both, including the press with scale-sm (a deliberate Bolt choice) and the wrong PIN shake.'],
     ['Content lands with the page','Anything people need to understand the screen is in place when nav-enter finishes. After that, at most one thing moves: a pop-in or a calm check. Amounts and text never rise in after the page.'],
-    ['One bounce, only for a confirmed success','Use spring-bouncy only after the server confirms a success, like cashback arriving or a statement ready, and only once per screen. Use it on scale only and keep dimension-100 of space around it so the overshoot isn’t clipped. Never on errors, warnings, money leaving or sparkles.'],
-    ['Keep repeated actions quiet','Typing, scrolling and tapping tabs only get feedback with duration-xs. Tab content and labels that change in place cross-fade with duration-sm or change instantly. No springs and no movement.'],
+    ['One bounce, only for a confirmed success','Use spring-bouncy only after the server confirms one of the approved moments: cashback arriving, a reward unlocked, or a statement or document ready. Adding a new moment needs a design review. Only once per screen, on scale only, with dimension-100 of space around it so the overshoot isn’t clipped. Never on errors, warnings, money leaving or sparkles.'],
+    ['Keep repeated actions quiet','Typing, scrolling and tapping tabs only get feedback with duration-xs. Tab content uses the cross-fade tokens, and labels that change in place fade out and back in with duration-sm or change instantly. No springs with bounce and no movement.'],
     ['Animate transform and opacity only','Never animate height, width, top or left. For a single disclosure, duration-md with ease-standard is enough. For other size changes, use Motion layout animation with spring-smooth.'],
     ['Reduce Motion fades instead of moving','Movement becomes a fade with duration-sm and ease-standard. Pressed states change opacity instead of scale, bounce is turned off and labels change instantly.']
   ],true);
@@ -1010,17 +1035,17 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
     ['iOS back swipe in the webview','If the native app handles the edge swipe and animates it, skip nav-exit for that step back. Otherwise the page animates twice.'],
     ['Android system back','Web content doesn’t get the predictive back preview. Back arrives after release, so run nav-exit from wherever the page is.'],
     ['Double tap on a main action','Both taps get press feedback, but the action and its success animation run once. Block the second submit in code, not with a longer animation. After a payment, keep the confirmed state and don’t show Send again.'],
-    ['Slow confirmation','Success plays only after the server confirms. If there’s no reply within 150 ms, show a linear spinner, so fast replies never flash one. Never stretch the success animation to hide the wait.'],
+    ['Slow confirmation','Success plays only after the server confirms. If there’s no reply within spinner-delay (duration-sm), show a linear spinner, so fast replies never flash one. Never stretch the success animation to hide the wait.'],
     ['Failure after optimistic UI','Revert with duration-sm and ease-standard, then show the error until someone tries again or edits. No bounce and no shake: shake is only for a wrong PIN.'],
     ['Wrong PIN','One iOS-style shake on both platforms, with duration-md, starting at distance-md and fading out. Colour and message use duration-sm, and the message stays until someone types again. With Reduce Motion on, colour and text carry the meaning.'],
-    ['Loading, empty, offline and timeout','Show a static skeleton, then fade the content in with duration-sm. No shimmer and no stagger. Empty, offline and timeout states use the same fade and keep their message on screen.'],
-    ['Field errors other than PIN','Fade the message in with duration-sm. Don’t shake the field.'],
+    ['Loading, empty, offline and timeout','Show a static skeleton, then bring the content in with the fade tokens (fade-in: spring-smooth). No shimmer and no stagger. Empty, offline and timeout states use the same fade and keep their message on screen.'],
+    ['Field errors other than PIN','Bring the message in with fade-in (spring-smooth). Don’t shake the field.'],
     ['Undo','The toast rises in and stays for 4 seconds, with Undo still tappable. Screen readers announce it.'],
     ['Background or keyboard','When the app goes to the background, jump running animations to their end. The system animates the keyboard, so don’t animate the layout at the same time.'],
     ['Stacked overlays','A dialog opened from a sheet gets one scrim, the darker of the two. The sheet stays still. Never stack dims or scale the page behind twice.'],
-    ['Money amounts change','Balances and amounts cross-fade with duration-sm. No counting up or rolling digits: a moving number looks uncertain.'],
+    ['Money amounts change','Balances and amounts use the cross-fade tokens (spring-smooth for both). No counting up or rolling digits: a moving number looks uncertain.'],
     ['Long or changing lists','Use stagger only on the first five items when a list first loads. Insert new rows with duration-md and ease-standard, and only when they’re on screen. Never on scroll, pagination or pull-to-refresh.'],
-    ['Tab switches','Tab content cross-fades with duration-sm on both platforms. No horizontal slide.'],
+    ['Tab switches','Tab content uses the cross-fade tokens on both platforms. No horizontal slide.'],
     ['Expand and collapse','A single disclosure uses duration-md and ease-standard, not spring-smooth.']
   ],true);
 
@@ -1127,6 +1152,16 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
       '  --motion-scale-sm: '+sc.sm+';',
       '  --motion-scale-lg: '+sc.lg+';',
       '  --motion-stagger: '+motionSystem.stagger+'ms;',
+      '  /* Fades: soft springs, like iOS. Exits use the shorter spring. */',
+      '  --motion-fade-in: var(--motion-spring-smooth);',
+      '  --motion-fade-in-duration: var(--motion-spring-smooth-duration);',
+      '  --motion-fade-out: var(--motion-spring-snappy);',
+      '  --motion-fade-out-duration: var(--motion-spring-snappy-duration);',
+      '  --motion-cross-fade: var(--motion-spring-smooth);',
+      '  --motion-cross-fade-duration: var(--motion-spring-smooth-duration);',
+      '  --motion-spinner-delay: var(--motion-duration-'+motionSystem.spinnerDelay+');',
+      '  /* Scrim colour comes from Clay special/scrim */',
+      '  --motion-scrim: var(--special-scrim, rgba(0, 0, 0, '+a.sheet.scrim+'));',
       '  --motion-nav-enter-duration: var(--motion-duration-'+a.nav.enter.duration+');',
       '  --motion-nav-enter-ease:     var(--motion-ease-'+a.nav.enter.ease+');',
       '  --motion-nav-exit-duration:  var(--motion-duration-'+a.nav.exit.duration+');',
@@ -1136,19 +1171,26 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
       '  --motion-sheet-enter-ease:     var(--motion-ease-'+a.sheet.enter.ease+');',
       '  --motion-sheet-exit-duration:  var(--motion-duration-'+a.sheet.exit.duration+');',
       '  --motion-sheet-exit-ease:      var(--motion-ease-'+a.sheet.exit.ease+');',
-      '  --motion-sheet-scrim: '+a.sheet.scrim+';',
       '  --motion-sheet-backdrop-scale: '+a.sheet.backdropScale+';',
       '  --motion-dialog-enter-duration: var(--motion-duration-'+a.dialog.enter.duration+');',
       '  --motion-dialog-enter-ease:     var(--motion-ease-'+a.dialog.enter.ease+');',
       '  --motion-dialog-exit-duration:  var(--motion-duration-'+a.dialog.exit.duration+');',
       '  --motion-dialog-exit-ease:      var(--motion-ease-'+a.dialog.exit.ease+');',
       '  --motion-dialog-scale: '+a.dialog.scale+';',
-      '  --motion-dialog-scrim: '+a.dialog.scrim+';',
+      '  /* Dialog and modal fade + scrim on one spring, so the dim and the surface move together */',
+      '  --motion-dialog-fade-enter: var(--motion-spring-'+a.dialog.fade.enter+');',
+      '  --motion-dialog-fade-enter-duration: var(--motion-spring-'+a.dialog.fade.enter+'-duration);',
+      '  --motion-dialog-fade-exit: var(--motion-spring-'+a.dialog.fade.exit+');',
+      '  --motion-dialog-fade-exit-duration: var(--motion-spring-'+a.dialog.fade.exit+'-duration);',
       '  --motion-modal-enter-duration: var(--motion-duration-'+a.modal.enter.duration+');',
       '  --motion-modal-enter-ease:     var(--motion-ease-'+a.modal.enter.ease+');',
       '  --motion-modal-exit-duration:  var(--motion-duration-'+a.modal.exit.duration+');',
       '  --motion-modal-exit-ease:      var(--motion-ease-'+a.modal.exit.ease+');',
       '  --motion-modal-scale: '+a.modal.scale+';',
+      '  --motion-modal-fade-enter: var(--motion-spring-'+a.modal.fade.enter+');',
+      '  --motion-modal-fade-enter-duration: var(--motion-spring-'+a.modal.fade.enter+'-duration);',
+      '  --motion-modal-fade-exit: var(--motion-spring-'+a.modal.fade.exit+');',
+      '  --motion-modal-fade-exit-duration: var(--motion-spring-'+a.modal.fade.exit+'-duration);',
       '}',
       '@supports (transition-timing-function: linear(0, 1)) {',
       '  :root {',
@@ -1167,14 +1209,12 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
       '  --motion-sheet-enter-ease:     var(--motion-ease-'+i.sheet.enter.ease+');',
       '  --motion-sheet-exit-duration:  var(--motion-duration-'+i.sheet.exit.duration+');',
       '  --motion-sheet-exit-ease:      var(--motion-ease-'+i.sheet.exit.ease+');',
-      '  --motion-sheet-scrim: '+i.sheet.scrim+';',
       '  --motion-sheet-backdrop-scale: '+i.sheet.backdropScale+';',
       '  --motion-dialog-enter-duration: var(--motion-duration-'+i.dialog.enter.duration+');',
       '  --motion-dialog-enter-ease:     var(--motion-ease-'+i.dialog.enter.ease+');',
       '  --motion-dialog-exit-duration:  var(--motion-duration-'+i.dialog.exit.duration+');',
       '  --motion-dialog-exit-ease:      var(--motion-ease-'+i.dialog.exit.ease+');',
       '  --motion-dialog-scale: '+i.dialog.scale+';',
-      '  --motion-dialog-scrim: '+i.dialog.scrim+';',
       '  --motion-modal-enter-duration: var(--motion-duration-'+i.modal.enter.duration+');',
       '  --motion-modal-enter-ease:     var(--motion-ease-'+i.modal.enter.ease+');',
       '  --motion-modal-exit-duration:  var(--motion-duration-'+i.modal.exit.duration+');',
@@ -1237,8 +1277,9 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
       '  up: { scale: 1, transition: spring.snappy },',
       '};',
       'export const patterns = {',
-      '  fade: { initial: { opacity: 0 }, animate: { opacity: 1, transition: { duration: duration.sm, ease: ease.standard } }, exit: { opacity: 0, transition: { duration: duration.xs, ease: ease.standard } } },',
-      '  crossFade: { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: duration.sm, ease: ease.standard } },',
+      '  fade: { initial: { opacity: 0 }, animate: { opacity: 1, transition: spring.smooth }, exit: { opacity: 0, transition: spring.snappy } },',
+      '  crossFade: { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: spring.smooth }, // one spring for both',
+      '  spinnerDelay: duration.'+motionSystem.spinnerDelay+',',
       '  riseIn: { initial: { opacity: 0, y: distance.md }, animate: { opacity: 1, y: 0, transition: { duration: duration.md, ease: ease.enter } }, exit: { opacity: 0, y: distance.md, transition: { duration: duration.sm, ease: ease.exit } } },',
       '  confirm: { initial: { opacity: 0, scale: scale.sm }, animate: { opacity: 1, scale: 1 }, transition: spring.smooth },',
       '  popIn: { initial: { opacity: 0, scale: scale.lg }, animate: { opacity: 1, scale: 1 }, transition: spring.bouncy },',
@@ -1250,14 +1291,14 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
       '  ios: {',
       '    nav: { enter: { duration: duration.'+i.nav.enter.duration+', ease: ease.'+i.nav.enter.ease+' }, exit: { duration: duration.'+i.nav.exit.duration+', ease: ease.'+i.nav.exit.ease+' }, parallax: "'+i.nav.parallax+'" },',
       '    sheet: { enter: { duration: duration.'+i.sheet.enter.duration+', ease: ease.'+i.sheet.enter.ease+' }, exit: { duration: duration.'+i.sheet.exit.duration+', ease: ease.'+i.sheet.exit.ease+' }, scrim: '+i.sheet.scrim+', backdropScale: '+i.sheet.backdropScale+', elastic: '+i.sheet.elastic+' },',
-      '    dialog: { enter: { duration: duration.'+i.dialog.enter.duration+', ease: ease.'+i.dialog.enter.ease+' }, exit: { duration: duration.'+i.dialog.exit.duration+', ease: ease.'+i.dialog.exit.ease+' }, scale: '+i.dialog.scale+', scrim: '+i.dialog.scrim+' },',
+      '    dialog: { enter: { duration: duration.'+i.dialog.enter.duration+', ease: ease.'+i.dialog.enter.ease+' }, exit: { duration: duration.'+i.dialog.exit.duration+', ease: ease.'+i.dialog.exit.ease+' }, scale: '+i.dialog.scale+', scrim: '+i.dialog.scrim+', fade: { enter: spring.'+i.dialog.fade.enter+', exit: spring.'+i.dialog.fade.exit+' } },',
       '    modal: { enter: { duration: duration.'+i.modal.enter.duration+', ease: ease.'+i.modal.enter.ease+' }, exit: { duration: duration.'+i.modal.exit.duration+', ease: ease.'+i.modal.exit.ease+' }, kind: "cover" },',
       '  },',
       '  android: {',
       '    nav: { enter: { duration: duration.'+a.nav.enter.duration+', ease: ease.'+a.nav.enter.ease+' }, exit: { duration: duration.'+a.nav.exit.duration+', ease: ease.'+a.nav.exit.ease+' }, parallax: "'+a.nav.parallax+'" },',
       '    sheet: { enter: { duration: duration.'+a.sheet.enter.duration+', ease: ease.'+a.sheet.enter.ease+' }, exit: { duration: duration.'+a.sheet.exit.duration+', ease: ease.'+a.sheet.exit.ease+' }, scrim: '+a.sheet.scrim+', backdropScale: '+a.sheet.backdropScale+', elastic: '+a.sheet.elastic+' },',
-      '    dialog: { enter: { duration: duration.'+a.dialog.enter.duration+', ease: ease.'+a.dialog.enter.ease+' }, exit: { duration: duration.'+a.dialog.exit.duration+', ease: ease.'+a.dialog.exit.ease+' }, scale: '+a.dialog.scale+', scrim: '+a.dialog.scrim+' },',
-      '    modal: { enter: { duration: duration.'+a.modal.enter.duration+', ease: ease.'+a.modal.enter.ease+' }, exit: { duration: duration.'+a.modal.exit.duration+', ease: ease.'+a.modal.exit.ease+' }, scale: '+a.modal.scale+', kind: "fadeScale" },',
+      '    dialog: { enter: { duration: duration.'+a.dialog.enter.duration+', ease: ease.'+a.dialog.enter.ease+' }, exit: { duration: duration.'+a.dialog.exit.duration+', ease: ease.'+a.dialog.exit.ease+' }, scale: '+a.dialog.scale+', scrim: '+a.dialog.scrim+', fade: { enter: spring.'+a.dialog.fade.enter+', exit: spring.'+a.dialog.fade.exit+' } },',
+      '    modal: { enter: { duration: duration.'+a.modal.enter.duration+', ease: ease.'+a.modal.enter.ease+' }, exit: { duration: duration.'+a.modal.exit.duration+', ease: ease.'+a.modal.exit.ease+' }, scale: '+a.modal.scale+', kind: "fadeScale", fade: { enter: spring.'+a.modal.fade.enter+', exit: spring.'+a.modal.fade.exit+' } },',
       '  },',
       '} as const;',
       '// Reduce Motion: same table as the CSS. Fades use duration.sm + ease.standard,',
@@ -1403,7 +1444,8 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
     var cs=getComputedStyle(dialogEl), op0=+cs.opacity, sc0=new DOMMatrix(cs.transform).a||rec.scale;
     var ds0=+getComputedStyle(dscrim).opacity, s0=+getComputedStyle(scrim).opacity;
     /* opacity and scrim share one soft spring, so the dim and the dialog arrive together */
-    var fade=reduced?{duration:D.sm,easing:E.standard}:(open?{duration:S.smooth.ms,easing:sp('smooth')}:{duration:S.snappy.ms,easing:sp('snappy')});
+    var fk=rec.fade[open?'enter':'exit'];
+    var fade=reduced?{duration:D.sm,easing:E.standard}:{duration:S[fk].ms,easing:sp(fk)};
     anim(dialogEl,[{opacity:op0},{opacity:open?1:0}],fade);
     if(!reduced)anim(dialogEl,[{transform:'scale('+sc0+')'},{transform:'scale('+(open?1:rec.scale)+')'}],{duration:msOf(open?rec.enter:rec.exit),easing:easeOf(open?rec.enter:rec.exit)},true);
     /* one scrim: the dialog scrim sits above the sheet and takes over the sheet scrim, never stacks on it */
@@ -1436,7 +1478,7 @@ footer{padding:96px 0 64px;font-size:14px;color:var(--content-secondary)}
       /* Android: fade and scale. Opacity and scrim share one soft spring, so the page never pops in
          or snaps away; the scale keeps the platform curve. */
       var sc=rec.scale, sc0=m.a||sc;
-      var fade=open?{duration:S.smooth.ms,easing:sp('smooth')}:{duration:S.snappy.ms,easing:sp('snappy')};
+      var fk=rec.fade[open?'enter':'exit'],fade={duration:S[fk].ms,easing:sp(fk)};
       anim(cover,[{opacity:op0},{opacity:open?1:0}],fade);
       anim(cover,[{transform:'scale('+sc0+')'},{transform:'scale('+(open?1:sc)+')'}],o,true);
       anim(scrim,[{opacity:s0},{opacity:open?recipe().dialog.scrim:0}],fade);
